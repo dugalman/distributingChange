@@ -1,0 +1,15 @@
+{
+    "name": "dmacdogall/distribuir",
+    "autoload": {
+        "psr-4": {
+            "Dmacdogall\\Distribuir\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Damián Mac Dougall",
+            "email": "dmacdougall@teceng-gaming.com.ar"
+        }
+    ],
+    "require": {}
+}
