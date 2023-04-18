@@ -11,5 +11,10 @@
             "email": "dmacdougall@teceng-gaming.com.ar"
         }
     ],
-    "require": {}
+    "scripts": {
+        "test": "./vendor/bin/phpunit src/MathTest.php"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    }
 }
