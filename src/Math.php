@@ -13,9 +13,16 @@ class Math
      */
     public function devolverCambio($valor = 0, $monedas = array())
     {
+        // Multiplica el valor y las monedas por 100 para trabajar con enteros
+        $valor = intval($valor * 100);
         
+        foreach ($monedas as &$moneda) {
+            $moneda = intval($moneda * 100);
+        }
+
         // Ordena las monedas en orden descendente
         rsort($monedas, SORT_NUMERIC);
+        // print_r($monedas);
 
         // Inicializa el array de resultados
         $resultados = array();
@@ -24,7 +31,7 @@ class Math
         $iteracion = 0;
         foreach ($monedas as $moneda) {
             $iteracion++;
-            printf("\n %02s %6s %06s", $iteracion, $moneda , $valor);
+            printf("\n %02s %6s %06s", $iteracion, $moneda, $valor);
             // Si la moneda es mayor que el valor, no puede ser utilizada
             if ($moneda > $valor) {
                 continue;
@@ -35,19 +42,22 @@ class Math
             // echo "($valor / $moneda) = $cantidad";
 
             // Almacena la cantidad de monedas necesarias
-            $resultados["$moneda"] = $cantidad;
+            // $resultados["$moneda"] = $cantidad;
+            
+            $resultados[number_format($moneda / 100, 2)] = $cantidad;
 
             // Resta el valor de las monedas utilizadas
             $valor -= $cantidad * $moneda;
         }
+    
 
         // Si todavía hay un valor restante, no se puede devolver el cambio exacto
-        if ($valor > 0) {
-            return false;
-        }
+        // if ($valor > 0) {
+        //     return false;
+        // }
 
         // Devuelve el array de resultados
-        return $resultados;
+        return array_map("intval", $resultados);
     }
 
     public function fibonacci($n)
