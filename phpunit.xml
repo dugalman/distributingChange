@@ -1,11 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/5.7/phpunit.xsd"
+    bootstrap="vendor/autoload.php"
+    backupGlobals="false"
+    beStrictAboutCoversAnnotation="true"
+    beStrictAboutOutputDuringTests="true"
+    beStrictAboutTestsThatDoNotTestAnything="true"
+    beStrictAboutTodoAnnotatedTests="true"
+    colors="true"
+    verbose="true">
     <testsuites>
-        <testsuite name="Tests">
-            <directory suffix=".php">./src</directory>
+        <testsuite name="default">
+            <directory suffix="Test.php">tests</directory>
         </testsuite>
-        <logging>
-            <log type="coverage-clover" target="./build/logs/clover.xml"/>
-        </logging>
     </testsuites>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src</directory>
+            <exclude>
+                <directory>src/Migration</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+
+    <php>
+        <env name="APP_HOST" value="dugalman.com.ar"></env>
+    </php>
 </phpunit>
