@@ -1,17 +1,11 @@
 <?php
 
-
-/**
- * @see https://riptutorial.com/phpunit
- */
-
-require_once 'Math.php';
-
 // use PHPUNIT_Framework_TestCase as TestCase;
 // sometimes it can be
+namespace App\Test;
 
-use phpDocumentor\Reflection\DocBlock\Tags\Var_;
-use PHPUnit\Framework\TestCase as TestCase;
+use App\Math;
+use PHPUnit\Framework\TestCase;
 
 class MathTest extends TestCase
 {
@@ -54,5 +48,4 @@ class MathTest extends TestCase
             array(6, 8),
         );
     }
-
 }

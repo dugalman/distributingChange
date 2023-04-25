@@ -5,12 +5,13 @@
  * @see https://riptutorial.com/phpunit
  */
 
-require_once 'Financial.php';
 
 // use PHPUNIT_Framework_TestCase as TestCase;
 // sometimes it can be
 
-use PHPUnit\Framework\TestCase as TestCase;
+use PHPUnit\Framework\TestCase as TestCase;;
+
+use App\Financial;
 
 class FinancialTest extends TestCase
 {

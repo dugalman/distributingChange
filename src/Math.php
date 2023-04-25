@@ -1,5 +1,9 @@
 <?php
 
+
+namespace App;
+
+
 class Math
 {
 

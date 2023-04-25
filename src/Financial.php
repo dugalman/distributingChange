@@ -1,5 +1,7 @@
 <?php
 
+namespace App;
+
 class Financial
 {
 
@@ -12,7 +14,7 @@ class Financial
      * 
      * @return array('resultados','resto')
      */
-    public function devolverCambio($valor_original, array $monedas_original )
+    public function devolverCambio($valor_original, array $monedas_original)
     {
         $valor  = intval($valor_original * 100);
 
@@ -37,7 +39,7 @@ class Financial
 
             // Calcula la cantidad de monedas necesarias
             $cantidad = (floor($valor / $moneda));
-            
+
             // echo "\n\t $cantidad = floor($valor / $moneda))";
 
             // Almacena la cantidad de monedas necesarias
@@ -57,7 +59,7 @@ class Financial
             $efectivo += $moneda * $cantidad;
         }
         // echo PHP_EOL."3----".($valor_original - $resto)."  === ".$valor;
-        
+
 
         // Devuelve el array de resultados
         return array(
