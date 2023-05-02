@@ -2,8 +2,127 @@
 
 namespace App;
 
+use InvalidArgumentException;
+use phpDocumentor\Reflection\DocBlock\Tags\Throws;
+
+/**
+ * @version 2.0
+ */
 class Financial
 {
+    /**
+     * El valor que se desea distribuir
+     * 
+     * @var float
+     */
+    private $_valor;
+
+    private $_divisas;
+
+    private $_limite;
+
+    private $_vuelto;
+    private $_efectivo;
+    private $_distribucion;
+
+
+    public function __construct()
+    {
+        $this->_valor = 0.0;
+        $this->_limite = 0.0;
+        $this->_divisas = array();
+    }
+
+    public function getVuelto()
+    {
+        return $this->_vuelto;
+    }
+    public function getEfectivo()
+    {
+        return $this->_efectivo;
+    }
+    public function getDistribucion()
+    {
+        return $this->_distribucion;
+    }
+
+
+
+    public function setValor($valor)
+    {
+        if ($valor <= 0) {
+            throw new InvalidArgumentException('El valor tiene que ser un numero mayor a cero');
+        }
+
+        $this->_valor = floatval($valor);
+        return $this;
+    }
+
+    public function getValor()
+    {
+        return $this->_valor;
+    }
+
+
+    public function setLimite($limite)
+    {
+        if ($limite <= 0) {
+            throw new InvalidArgumentException('El limite tiene que ser un numero mayor a cero');
+        }
+        $this->_limite = $limite;
+        return $this;
+    }
+
+    public function getLimite()
+    {
+
+        return $this->_limite;
+    }
+
+    public function setDivisas(array $divisas)
+    {
+        if (is_array($divisas) && count($divisas) === 0) {
+            throw new InvalidArgumentException('La lista de divisas no puede estar vacia');
+        }
+
+        $this->_divisas = $divisas;
+        return $this;
+    }
+
+    public function getDivisas()
+    {
+        return $this->_divisas;
+    }
+
+    private function aplicarLimiteALasDivisas()
+    {
+
+        $limit = $this->getLimite();
+        $out = array();
+
+        foreach ($this->getDivisas() as $divisa) {
+            if ($divisa >= $limit) {
+                array_push($out, $divisa);
+            }
+        }
+        return $out;
+    }
+
+    public function calcularVuelto()
+    {
+        $valor = $this->getValor();
+        $monedas = $this->aplicarLimiteALasDivisas();
+
+        $rta = $this->devolverCambio(
+            $this->getValor(),
+            $monedas
+        );
+
+
+        $this->_vuelto = $rta['resto'];
+        $this->_efectivo = $rta['efectivo'];
+        $this->_distribucion = $rta['resultados'];
+    }
 
 
     /**
@@ -16,7 +135,7 @@ class Financial
      */
     public function devolverCambio($valor_original, array $monedas_original)
     {
-        $valor  = intval($valor_original * 100);
+        $valorTemp  = intval($valor_original * 100);
 
         $monedas = array();
         foreach ($monedas_original as $moneda) {
@@ -33,32 +152,32 @@ class Financial
         foreach ($monedas as $moneda) {
 
             // Si la moneda es mayor que el valor, no puede ser utilizada
-            if ($moneda > $valor) {
+            if ($moneda > $valorTemp) {
                 continue;
             }
 
             // Calcula la cantidad de monedas necesarias
-            $cantidad = (floor($valor / $moneda));
+            $cantidad = (floor($valorTemp / $moneda));
 
-            // echo "\n\t $cantidad = floor($valor / $moneda))";
+            // echo "\n\t $cantidad = floor($valorTemp / $moneda))";
 
             // Almacena la cantidad de monedas necesarias
             $index = number_format($moneda / 100, 2, '.', '');
             $resultados[$index] = $cantidad;
 
             // Resta el valor de las monedas utilizadas
-            // echo PHP_EOL."1----".$valor."-----".$cantidad."-----".$moneda;
-            $valor -= $cantidad * $moneda;
-            // echo PHP_EOL."2----".$valor."-----".$cantidad."-----".$moneda;
+            // echo PHP_EOL."1----".$valorTemp."-----".$cantidad."-----".$moneda;
+            $valorTemp -= $cantidad * $moneda;
+            // echo PHP_EOL."2----".$valorTemp."-----".$cantidad."-----".$moneda;
         }
 
-        // El resto deberia ser la variable $valor, PERO muchas ves hay error de redondeo
+        // El resto deberia ser la variable $valorTemp, PERO muchas ves hay error de redondeo
         // Para evitar eso, calculo la diferencia entre el valor original y el calculado
         $efectivo = 0;
         foreach ($resultados as $moneda => $cantidad) {
             $efectivo += $moneda * $cantidad;
         }
-        // echo PHP_EOL."3----".($valor_original - $resto)."  === ".$valor;
+        // echo PHP_EOL."3----".($valor_original - $resto)."  === ".$valorTemp;
 
 
         // Devuelve el array de resultados

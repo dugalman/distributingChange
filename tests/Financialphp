@@ -16,18 +16,19 @@ use App\Financial;
 class FinancialTest extends TestCase
 {
 
+    #########################################################
+
     /**
      * Test with data from dataProvider
-     * 
+     *
      * @dataProvider providerDevolverCambioRestringidoMaximo50pesos
      */
     public function testDevolverCambioRestringidoA50Pesos($valor, $expect)
     {
         $financial = new Financial();
 
-        $limite = 50;
         $monedas = [1000, 500, 200, 100, 50];
-        $rta = $financial->devolverCambio($valor, $monedas, $limite);
+        $rta = $financial->devolverCambio($valor, $monedas);
 
         $this->assertEquals(
             number_format($expect['resto'] / 100, 2),
@@ -50,7 +51,7 @@ class FinancialTest extends TestCase
 
     /**
      * Test with data from dataProvider
-     * 
+     *
      * @dataProvider providerDevolverCambioRestringidoMaximo100pesos
      */
     public function testDevolverCambioRestringidoA100Pesos($valor, $expect)
@@ -131,7 +132,7 @@ class FinancialTest extends TestCase
 
     /**
      * Test with data from dataProvider
-     * 
+     *
      * @dataProvider providerDevolverCambioSinBilletesde100pesos()
      */
     public function testDevolverCambioSinBilletesde100Pesos($valor, $expect)
