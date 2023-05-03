@@ -29,14 +29,25 @@ class MathTest extends TestCase
 
     /**
      * Test with data from dataProvider
+     *
+     * @param int $n : Numero a probar
+     * @param int $result : Resultado esperado
      * 
      * @dataProvider providerFibonacci
+     * 
+     * @return void
      */
     public function testFibonacciWithDataProvider($n, $result)
     {
         $math = new Math();
         $this->assertEquals($result, $math->fibonacci($n));
     }
+
+    /**
+     * Proovedor de datos para testFibonacciWithDataProvider
+     * 
+     * @return array
+     */
     public function providerFibonacci()
     {
         return array(

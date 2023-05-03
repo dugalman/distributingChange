@@ -11,14 +11,24 @@ use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 class Financial
 {
     /**
-     * El valor que se desea distribuir
+     * El cantidad de dinero que se desea distribuir
      * 
      * @var float
      */
     private $_valor;
 
+    /**
+     * Listado con las denominaciones de billetes disponibles
+     * 
+     * @var array
+     */
     private $_divisas;
 
+    /**
+     * Se utiliza para indicar que denominaciones de billetes se puede utilizar
+     * 
+     * @var float
+     */
     private $_limite;
 
     private $_vuelto;
@@ -26,6 +36,9 @@ class Financial
     private $_distribucion;
 
 
+    /**
+     * Construnctor de clase
+     */
     public function __construct()
     {
         $this->_valor = 0.0;
@@ -46,12 +59,10 @@ class Financial
         return $this->_distribucion;
     }
 
-
-
     public function setValor($valor)
     {
         if ($valor <= 0) {
-            throw new InvalidArgumentException('El valor tiene que ser un numero mayor a cero');
+            throw new InvalidArgumentException('The value must be a number greater than zero.');
         }
 
         $this->_valor = floatval($valor);
@@ -67,7 +78,7 @@ class Financial
     public function setLimite($limite)
     {
         if ($limite <= 0) {
-            throw new InvalidArgumentException('El limite tiene que ser un numero mayor a cero');
+            throw new InvalidArgumentException('The limit must be a number greater than zero.');
         }
         $this->_limite = $limite;
         return $this;
@@ -82,7 +93,7 @@ class Financial
     public function setDivisas(array $divisas)
     {
         if (is_array($divisas) && count($divisas) === 0) {
-            throw new InvalidArgumentException('La lista de divisas no puede estar vacia');
+            throw new InvalidArgumentException('Currency list cannot be empty');
         }
 
         $this->_divisas = $divisas;
