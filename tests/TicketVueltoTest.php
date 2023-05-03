@@ -249,14 +249,14 @@ class TicketVueltoTest extends TestCase
         return array(
 
             //
-            array(5   , ['vuelto' =>  5 , 'distribucion' => []]),
-            array(10  , ['vuelto' =>  10, 'distribucion' => []]),
-            array(20  , ['vuelto' =>  20, 'distribucion' => []]),
-            array(50  , ['vuelto' =>  50, 'distribucion' => []]),
-            array(100 , ['vuelto' =>  0 , 'distribucion' => ['100.00' => 1]]),
-            array(200 , ['vuelto' =>  0 , 'distribucion' => ['200.00' => 1]]),
-            array(500 , ['vuelto' =>  0 , 'distribucion' => ['500.00' => 1]]),
-            array(1000, ['vuelto' =>  0 , 'distribucion' => ['1000.00' => 1]]),
+            array(5, ['vuelto' =>  5, 'distribucion' => []]),
+            array(10, ['vuelto' =>  10, 'distribucion' => []]),
+            array(20, ['vuelto' =>  20, 'distribucion' => []]),
+            array(50, ['vuelto' =>  50, 'distribucion' => []]),
+            array(100, ['vuelto' =>  0, 'distribucion' => ['100.00' => 1]]),
+            array(200, ['vuelto' =>  0, 'distribucion' => ['200.00' => 1]]),
+            array(500, ['vuelto' =>  0, 'distribucion' => ['500.00' => 1]]),
+            array(1000, ['vuelto' =>  0, 'distribucion' => ['1000.00' => 1]]),
             //
             array(99.99, ['vuelto' =>  99.99, 'distribucion' => []]),
             array(199.99, ['vuelto' =>  99.99, 'distribucion' => ['100.00' => 1]]),
@@ -278,6 +278,67 @@ class TicketVueltoTest extends TestCase
             array(1699.99, ['vuelto' =>  99.99, 'distribucion' => ['1000.00' => 1, '500.00' => 1, '100.00' => 1]]),
             array(1799.99, ['vuelto' =>  99.99, 'distribucion' => ['1000.00' => 1, '500.00' => 1, '200.00' => 1]]),
             array(1899.99, ['vuelto' =>  99.99, 'distribucion' => ['1000.00' => 1, '500.00' => 1, '200.00' => 1, '100.00' => 1]]),
+            array(1999.99, ['vuelto' =>  99.99, 'distribucion' => ['1000.00' => 1, '500.00' => 1, '200.00' => 2,]]),
+
+
+        );
+    }
+    /**
+     * ************************************************************************
+     * @dataProvider providerCalcularVueltoConLimiteDe100PesosYNoPermitoBilleteDe100
+     * 
+     * Si NO permito billetes de 100 pesos, el vuelto es un numero entre $0.0- y $199.99-
+     */
+    public function testCalcularVueltoConLimiteDe100PesosYNoPermitoBilleteDe100($valor, $expect)
+    {
+        $monedas = [1000, 500, 200, 100, 50, 20, 10, 5];
+
+        // le sumo 1 al limite para que incluya al billete de 100
+        $limite = 101;
+        $this->tkv
+            ->setValor($valor)
+            ->setDivisas($monedas)
+            ->setLimite($limite)
+            ->calcularVuelto();
+
+        $this->assertEquals($expect['vuelto'], $this->tkv->getVuelto(), 'Fallo el vuelto');
+        $this->assertEquals($expect['distribucion'], $this->tkv->getDistribucion(), 'fallo la distribución');
+    }
+
+    public function providerCalcularVueltoConLimiteDe100PesosYNoPermitoBilleteDe100()
+    {
+        return array(
+
+            //
+            array(5, ['vuelto' =>  5, 'distribucion' => []]),
+            array(10, ['vuelto' =>  10, 'distribucion' => []]),
+            array(20, ['vuelto' =>  20, 'distribucion' => []]),
+            array(50, ['vuelto' =>  50, 'distribucion' => []]),
+            array(100, ['vuelto' =>  100, 'distribucion' => []]),
+            array(200, ['vuelto' =>  0, 'distribucion' => ['200.00' => 1]]),
+            array(500, ['vuelto' =>  0, 'distribucion' => ['500.00' => 1]]),
+            array(1000, ['vuelto' =>  0, 'distribucion' => ['1000.00' => 1]]),
+            //
+            array(99.99, ['vuelto' =>  99.99, 'distribucion' => []]),
+            array(199.99, ['vuelto' => 199.99, 'distribucion' => []]),
+            array(299.99, ['vuelto' =>  99.99, 'distribucion' => ['200.00' => 1]]),
+            array(399.99, ['vuelto' => 199.99, 'distribucion' => ['200.00' => 1]]),
+            array(499.99, ['vuelto' =>  99.99, 'distribucion' => ['200.00' => 2]]),
+            array(599.99, ['vuelto' =>  99.99, 'distribucion' => ['500.00' => 1]]),
+            array(699.99, ['vuelto' => 199.99, 'distribucion' => ['500.00' => 1]]),
+            array(799.99, ['vuelto' =>  99.99, 'distribucion' => ['500.00' => 1, '200.00' => 1]]),
+            array(899.99, ['vuelto' => 199.99, 'distribucion' => ['500.00' => 1, '200.00' => 1]]),
+            array(999.99, ['vuelto' =>  99.99, 'distribucion' => ['500.00' => 1, '200.00' => 2,]]),
+            //
+            array(1099.99, ['vuelto' =>  99.99, 'distribucion' => ['1000.00' => 1]]),
+            array(1199.99, ['vuelto' => 199.99, 'distribucion' => ['1000.00' => 1]]),
+            array(1299.99, ['vuelto' =>  99.99, 'distribucion' => ['1000.00' => 1, '200.00' => 1]]),
+            array(1399.99, ['vuelto' => 199.99, 'distribucion' => ['1000.00' => 1, '200.00' => 1]]),
+            array(1499.99, ['vuelto' =>  99.99, 'distribucion' => ['1000.00' => 1, '200.00' => 2]]),
+            array(1599.99, ['vuelto' =>  99.99, 'distribucion' => ['1000.00' => 1, '500.00' => 1]]),
+            array(1699.99, ['vuelto' => 199.99, 'distribucion' => ['1000.00' => 1, '500.00' => 1]]),
+            array(1799.99, ['vuelto' =>  99.99, 'distribucion' => ['1000.00' => 1, '500.00' => 1, '200.00' => 1]]),
+            array(1899.99, ['vuelto' => 199.99, 'distribucion' => ['1000.00' => 1, '500.00' => 1, '200.00' => 1]]),
             array(1999.99, ['vuelto' =>  99.99, 'distribucion' => ['1000.00' => 1, '500.00' => 1, '200.00' => 2,]]),
 
 
