@@ -340,8 +340,46 @@ class TicketVueltoTest extends TestCase
             array(1799.99, ['vuelto' =>  99.99, 'distribucion' => ['1000.00' => 1, '500.00' => 1, '200.00' => 1]]),
             array(1899.99, ['vuelto' => 199.99, 'distribucion' => ['1000.00' => 1, '500.00' => 1, '200.00' => 1]]),
             array(1999.99, ['vuelto' =>  99.99, 'distribucion' => ['1000.00' => 1, '500.00' => 1, '200.00' => 2,]]),
-
-
         );
     }
+
+
+    /**
+     * ************************************************************************
+     * @dataProvider providerCalcularVueltoCambiandoElLimite
+     * 
+     */
+    public function testCalcularVueltoCambiandoElLimite($limite, $expect)
+    {
+        $monedas = [1000, 500, 200, 100, 50, 20, 10, 5];
+
+        $valor = 1899.99;
+        // le sumo 1 al limite para que incluya al billete de 100
+        $this->tkv
+            ->setValor($valor)
+            ->setDivisas($monedas)
+            ->setLimite($limite)
+            ->calcularVuelto();
+
+        $this->assertEquals($expect['vuelto'], $this->tkv->getVuelto(), 'Fallo el vuelto');
+        $this->assertEquals($expect['distribucion'], $this->tkv->getDistribucion(), 'fallo la distribución');
+    }
+
+    public function providerCalcularVueltoCambiandoElLimite()
+    {
+     return array(
+            //$valor = 1899.99;
+
+            // Si NO permito billetes de 100 pesos, el vuelto es un numero entre $0.0- y $199.99-
+            array(100, ['vuelto' =>  99.99, 'distribucion' => ['1000.00' => 1, '500.00' => 1, '200.00' => 1, '100.00' => 1]]),
+            array(101, ['vuelto' => 199.99, 'distribucion' => ['1000.00' => 1, '500.00' => 1, '200.00' => 1]]),
+            
+            // Si NO permito billetes de 200 pesos, el vuelto es un numero entre $0.0- y $399.99-
+            array(200, ['vuelto' => 199.99, 'distribucion' => ['1000.00' => 1, '500.00' => 1, '200.00' => 1]]),
+            array(201, ['vuelto' => 399.99, 'distribucion' => ['1000.00' => 1, '500.00' => 1]]),
+
+        );   
+    }
+
+
 }
